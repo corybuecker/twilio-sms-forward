@@ -36,27 +36,26 @@ func init() {
 }
 
 func TestResponseStatus(t *testing.T) {
-	resp, _ := http.Get(server.URL + "/incoming_message?to=1")
+	resp, _ := http.Get(server.URL + "/incoming_message?to=1&From=1&Body=1")
 	if resp.StatusCode != 200 {
 		t.Errorf("expected a 200 status code")
 	}
 }
-func TestErrorResponseStatus(t *testing.T) {
-	resp, _ := http.Get(server.URL + "/incoming_message")
-	if resp.StatusCode != 500 {
-		t.Errorf("expected a 500 status code")
-	}
-}
 func TestLogging(t *testing.T) {
-	http.Get(server.URL + "/incoming_message?to=1")
+	http.Get(server.URL + "/incoming_message?to=1&From=1&Body=1")
 
 	if incomingMessageRoute.logger.(*TestLogger).Logged != true {
 		t.Errorf("expected logger to have been called")
 	}
 }
-
+func TestMissingToNumber(t *testing.T) {
+	resp, _ := http.Get(server.URL + "/incoming_message")
+	if resp.StatusCode != 500 {
+		t.Errorf("expected a 500 status code")
+	}
+}
 func TestToNumber(t *testing.T) {
-	response, _ := http.Get(server.URL + "/incoming_message?to=12345")
+	response, _ := http.Get(server.URL + "/incoming_message?to=12345&From=1&Body=1")
 	contents, _ := ioutil.ReadAll(response.Body)
 
 	if strings.Contains(string(contents), "12345") != true {
