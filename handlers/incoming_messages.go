@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"net/http"
 )
@@ -16,25 +17,33 @@ type response struct {
 	Message message  `xml:"Message"`
 }
 
+func parseQueryParams(request *http.Request) (map[string]string, error) {
+	m := make(map[string]string)
+	m["to"] = request.FormValue("to")
+	m["from"] = request.FormValue("From")
+	m["body"] = request.FormValue("Body")
+	if len(m["to"]) == 0 || len(m["from"]) == 0 || len(m["body"]) == 0 {
+		return m, errors.New("missing values")
+	}
+	return m, nil
+}
+
+// CreateIncomingMessage is the handler to generate a forwarding XML response
 func CreateIncomingMessage(w http.ResponseWriter, r *http.Request) {
-	var to []string
-	var from, body string
+	var (
+		parameters   map[string]string
+		err          error
+		responseData response
+	)
 
-	to, _ = r.URL.Query()["to"]
-
-	from = r.FormValue("From")
-	body = r.FormValue("Body")
-
-	if len(to) != 1 || len(from) == 0 || len(body) == 0 {
-		http.Error(w, "Missing Query Parameters", 500)
+	if parameters, err = parseQueryParams(r); err != nil {
+		http.Error(w, "", 500)
 		return
 	}
-
-	var responseData response
 	responseData = response{}
-	responseData.Message.To = to[0]
+	responseData.Message.To = parameters["to"]
 
-	smsBody := fmt.Sprintf("%s: %s", from, body)
+	smsBody := fmt.Sprintf("%s: %s", parameters["from"], parameters["body"])
 	if len(smsBody) > 160 {
 		smsBody = smsBody[:160]
 	}
