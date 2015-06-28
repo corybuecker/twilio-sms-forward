@@ -2,7 +2,9 @@ machine:
   services:
     - docker
 
-# test:
-#   post:
-#     - go install github.com/corybuecker/twilio-sms-forward
-#     - docker build -t twilio-sms-forward .
+test:
+  post:
+    - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -v --ldflags '-extldflags -static -w -s' -installsuffix nocgo .
+    - docker build --no-cache -t corybuecker/twilio-sms-forward .
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - docker push corybuecker/twilio-sms-forward
