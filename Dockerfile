@@ -1,4 +1,4 @@
-from debian:jessie
+from scratch
 maintainer Cory Buecker <email@corybuecker.com>
 
 env GOPATH $HOME/go

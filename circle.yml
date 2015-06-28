@@ -1,7 +1,8 @@
-machine:
-  services:
-    - docker
-
-dependencies:
-  override:
-    - docker build -t corybuecker/twilio-sms-forward .
+# machine:
+#   services:
+#     - docker
+#
+# test:
+#   post:
+#     - go install github.com/corybuecker/twilio-sms-forward
+#     - docker build -t twilio-sms-forward .
