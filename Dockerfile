@@ -1,4 +1,4 @@
-from scratch
+from busybox
 maintainer Cory Buecker <email@corybuecker.com>
 
 run mkdir /go
