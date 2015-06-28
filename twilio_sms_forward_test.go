@@ -23,14 +23,17 @@ var (
 	server *httptest.Server
 
 	incomingMessageRoute *Route
+	healthCheckRoute     *Route
 )
 
 func init() {
 	r := mux.NewRouter().StrictSlash(true)
 
 	incomingMessageRoute = &Route{URL: "/incoming_message", handler: handlers.CreateIncomingMessage, logger: new(TestLogger)}
+	healthCheckRoute = &Route{URL: "/", handler: handlers.HealthCheck, logger: new(TestLogger)}
 
 	r.Handle(incomingMessageRoute.URL, incomingMessageRoute.HandlerWithLogging())
+	r.Handle(healthCheckRoute.URL, healthCheckRoute.HandlerWithLogging())
 
 	server = httptest.NewServer(r)
 }
@@ -60,5 +63,12 @@ func TestToNumber(t *testing.T) {
 
 	if strings.Contains(string(contents), "12345") != true {
 		t.Errorf("body to contain to number")
+	}
+}
+func TestHealth(t *testing.T) {
+	response, _ := http.Get(server.URL)
+
+	if response.StatusCode != 200 {
+		t.Errorf("expected a 200 status code")
 	}
 }
