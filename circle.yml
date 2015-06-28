@@ -1,7 +1,7 @@
-# machine:
-#   services:
-#     - docker
-#
+machine:
+  services:
+    - docker
+
 # test:
 #   post:
 #     - go install github.com/corybuecker/twilio-sms-forward
