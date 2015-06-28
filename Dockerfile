@@ -1,5 +1,6 @@
 from scratch
 maintainer Cory Buecker <email@corybuecker.com>
 
-add twilio-sms-forward twilio-sms-forward
-cmd ["/twilio-sms-forward"]
+run mkdir /go
+add twilio-sms-forward /go/twilio-sms-forward
+cmd ["/go/twilio-sms-forward"]
