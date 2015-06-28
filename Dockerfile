@@ -1,6 +1,5 @@
-from busybox
+from busybox:latest
 maintainer Cory Buecker <email@corybuecker.com>
 
-run mkdir /go
-add twilio-sms-forward /go/twilio-sms-forward
-cmd ["/go/twilio-sms-forward"]
+add twilio-sms-forward /usr/bin/twilio-sms-forward
+entrypoint ["/usr/bin/twilio-sms-forward"]
